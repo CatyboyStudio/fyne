@@ -108,7 +108,8 @@ type window struct {
 	shouldWidth, shouldHeight       int
 	shouldExpand                    bool
 
-	pending []func()
+	pending     []func()
+	afterCreate []func()
 }
 
 func (w *window) SetFullScreen(full bool) {
@@ -744,6 +745,10 @@ func (w *window) create() {
 		w.requestedWidth, w.requestedHeight = w.width, w.height
 		// order of operation matters so we do these last items in order
 		w.viewport.SetSize(w.shouldWidth, w.shouldHeight) // ensure we requested latest size
+
+		for _, fn := range w.afterCreate {
+			fn()
+		}
 	})
 }
 
