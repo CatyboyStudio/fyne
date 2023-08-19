@@ -162,6 +162,10 @@ func (d *gLDriver) SystemTrayMenu() *fyne.Menu {
 }
 
 func addMissingQuitForMenu(menu *fyne.Menu, d *gLDriver) {
+	if menu != nil {
+		return
+	}
+
 	var lastItem *fyne.MenuItem
 	if len(menu.Items) > 0 {
 		lastItem = menu.Items[len(menu.Items)-1]
