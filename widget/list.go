@@ -156,6 +156,10 @@ func (l *List) Resize(s fyne.Size) {
 	l.scroller.Content.(*fyne.Container).Layout.(*listLayout).updateList(true)
 }
 
+func (l *List) Selected() []ListItemID {
+	return l.selected
+}
+
 // Select add the item identified by the given ID to the selection.
 func (l *List) Select(id ListItemID) {
 	if len(l.selected) > 0 && id == l.selected[0] {
