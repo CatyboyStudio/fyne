@@ -67,6 +67,7 @@ type FileDialog struct {
 	desiredSize              fyne.Size
 	filter                   storage.FileFilter
 	save                     bool
+	filepath                 bool
 	// this will be applied to dialog.dir when it's loaded
 	startingLocation fyne.ListableURI
 	// this will be the initial filename in a FileDialog in save mode
@@ -109,7 +110,8 @@ func (f *fileDialog) makeUI() fyne.CanvasObject {
 		}
 
 		if f.file.save {
-			callback := f.file.callback.(func(fyne.URIWriteCloser, error))
+			callback, _ := f.file.callback.(func(fyne.URIWriteCloser, error))
+			callback2, _ := f.file.callback.(func(fyne.URI, error))
 			name := f.fileName.(*widget.Entry).Text
 			location, _ := storage.Child(f.dir, name)
 
@@ -117,6 +119,21 @@ func (f *fileDialog) makeUI() fyne.CanvasObject {
 
 			// check if a directory is selected
 			listable, err := storage.CanList(location)
+
+			if f.file.filepath {
+				if err == nil && listable {
+					// a directory has been selected
+					ShowInformation("Cannot overwrite",
+						"Files cannot replace a directory,\ncheck the file name and try again", f.file.parent)
+					return
+				}
+				f.win.Hide()
+				if f.file.onClosedCallback != nil {
+					f.file.onClosedCallback(true)
+				}
+				callback2(location, nil)
+				return
+			}
 
 			if !exists {
 				f.win.Hide()
@@ -176,7 +193,11 @@ func (f *fileDialog) makeUI() fyne.CanvasObject {
 		}
 		if f.file.callback != nil {
 			if f.file.save {
-				f.file.callback.(func(fyne.URIWriteCloser, error))(nil, nil)
+				if f.file.filepath {
+					f.file.callback.(func(fyne.URI, error))(nil, nil)
+				} else {
+					f.file.callback.(func(fyne.URIWriteCloser, error))(nil, nil)
+				}
 			} else if f.file.isDirectory() {
 				f.file.callback.(func(fyne.ListableURI, error))(nil, nil)
 			} else {
@@ -714,6 +735,11 @@ func NewFileOpen(callback func(fyne.URIReadCloser, error), parent fyne.Window) *
 // The dialog will appear over the window specified when Show() is called.
 func NewFileSave(callback func(fyne.URIWriteCloser, error), parent fyne.Window) *FileDialog {
 	dialog := &FileDialog{callback: callback, parent: parent, save: true}
+	return dialog
+}
+
+func NewFileSavePath(callback func(fyne.URI, error), parent fyne.Window) *FileDialog {
+	dialog := &FileDialog{callback: callback, parent: parent, save: true, filepath: true}
 	return dialog
 }
 
