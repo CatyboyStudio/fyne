@@ -139,6 +139,14 @@ func (d *dialog) Show() {
 	d.win.Show()
 }
 
+func (d *dialog) SetVisible(v bool) {
+	if v {
+		d.win.Show()
+	} else {
+		d.win.Hide()
+	}
+}
+
 func (d *dialog) Refresh() {
 	d.win.Refresh()
 }
