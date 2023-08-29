@@ -86,6 +86,25 @@ func NewCustomConfirm(title, confirm, dismiss string, content fyne.CanvasObject,
 	return d
 }
 
+func NewCustomButton(title string, buttons []fyne.CanvasObject, dismiss string, content fyne.CanvasObject,
+	parent fyne.Window) Dialog {
+	d := &dialog{content: content, title: title, icon: nil, parent: parent}
+	d.layout = &dialogLayout{d: d}
+
+	d.dismiss = &widget.Button{Text: dismiss, Icon: theme.CancelIcon(),
+		OnTapped: d.Hide,
+	}
+	clist := []fyne.CanvasObject{
+		layout.NewSpacer(), d.dismiss,
+	}
+	clist = append(clist, buttons...)
+	clist = append(clist, layout.NewSpacer())
+
+	d.create(container.NewHBox(clist...))
+
+	return d
+}
+
 // ShowCustom shows a dialog over the specified application using custom
 // content. The button will have the dismiss text set.
 // The MinSize() of the CanvasObject passed will be used to set the size of the window.
