@@ -108,7 +108,7 @@ func (p *ColorPickerDialog) updateUI() {
 	if w := p.win; w != nil {
 		w.Hide()
 	}
-	p.dialog.dismiss = &widget.Button{Text: "Cancel", Icon: theme.CancelIcon(),
+	p.dialog.dismiss = &widget.Button{Text: fyne.GetI18NString("Fyne.Cancel", "Cancel"), Icon: theme.CancelIcon(),
 		OnTapped: p.dialog.Hide,
 	}
 	if p.Advanced {
@@ -116,7 +116,7 @@ func (p *ColorPickerDialog) updateUI() {
 			p.color = c
 		})
 
-		advancedItem := widget.NewAccordionItem("Advanced", p.picker)
+		advancedItem := widget.NewAccordionItem(fyne.GetI18NString("Fyne.Advanced", "Advanced"), p.picker)
 		if p.advanced != nil {
 			advancedItem.Open = p.advanced.Items[0].Open
 		}
@@ -132,7 +132,7 @@ func (p *ColorPickerDialog) updateUI() {
 			p.advanced,
 		)
 
-		confirm := &widget.Button{Text: "Confirm", Icon: theme.ConfirmIcon(), Importance: widget.HighImportance,
+		confirm := &widget.Button{Text: fyne.GetI18NString("Fyne.Confirm", "Confirm"), Icon: theme.ConfirmIcon(), Importance: widget.HighImportance,
 			OnTapped: func() {
 				p.selectColor(p.color)
 			},

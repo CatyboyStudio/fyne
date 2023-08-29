@@ -25,10 +25,10 @@ func (d *ConfirmDialog) SetConfirmText(label string) {
 func NewConfirm(title, message string, callback func(bool), parent fyne.Window) *ConfirmDialog {
 	d := newDialog(title, message, theme.QuestionIcon(), callback, parent)
 
-	d.dismiss = &widget.Button{Text: "No", Icon: theme.CancelIcon(),
+	d.dismiss = &widget.Button{Text: fyne.GetI18NString("Fyne.No", "No"), Icon: theme.CancelIcon(),
 		OnTapped: d.Hide,
 	}
-	confirm := &widget.Button{Text: "Yes", Icon: theme.ConfirmIcon(), Importance: widget.HighImportance,
+	confirm := &widget.Button{Text: fyne.GetI18NString("Fyne.Yes", "Yes"), Icon: theme.ConfirmIcon(), Importance: widget.HighImportance,
 		OnTapped: func() {
 			d.hideWithResponse(true)
 		},

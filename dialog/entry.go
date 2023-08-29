@@ -49,19 +49,22 @@ func (i *EntryDialog) SetOnClosed(callback func()) {
 func NewEntryDialog(title, message string, onConfirm func(string), parent fyne.Window) *EntryDialog {
 	i := &EntryDialog{entry: widget.NewEntry()}
 	items := []*widget.FormItem{widget.NewFormItem(message, i.entry)}
-	i.formDialog = NewForm(title, "Ok", "Cancel", items, func(ok bool) {
-		// User has confirmed and entered an input
-		if ok && onConfirm != nil {
-			onConfirm(i.entry.Text)
-		}
+	i.formDialog = NewForm(title,
+		fyne.GetI18NString("Fyne.OK", "OK"),
+		fyne.GetI18NString("Fyne.Cancel", "Cancel"),
+		items, func(ok bool) {
+			// User has confirmed and entered an input
+			if ok && onConfirm != nil {
+				onConfirm(i.entry.Text)
+			}
 
-		if i.onClosed != nil {
-			i.onClosed()
-		}
+			if i.onClosed != nil {
+				i.onClosed()
+			}
 
-		i.entry.Text = ""
-		i.win.Hide() // Close directly without executing the callback. This is the callback.
-	}, parent).(*formDialog)
+			i.entry.Text = ""
+			i.win.Hide() // Close directly without executing the callback. This is the callback.
+		}, parent).(*formDialog)
 
 	return i
 }
